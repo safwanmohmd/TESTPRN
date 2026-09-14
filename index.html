@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ekart NDD Priority ZIP & PRN Generator</title>
-  <!-- Barcode & ZIP libraries -->
+  <title>Ekart NDD Priority ZPL/PRN Generator</title>
   <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <style>
@@ -15,47 +14,46 @@
     }
 
     body {
-      background-color: #0b0f19;
-      color: #f1f5f9;
+      background-color: #0d1117;
+      color: #f0f6fc;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
       min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: flex-start;
-      padding: 30px 16px;
+      padding: 24px 16px;
     }
 
-    .app-container {
+    .container {
       display: grid;
-      grid-template-columns: 330px auto;
-      gap: 30px;
+      grid-template-columns: 320px auto;
+      gap: 28px;
       align-items: start;
-      max-width: 860px;
+      max-width: 1100px;
       width: 100%;
     }
 
-    @media (max-width: 768px) {
-      .app-container {
+    @media (max-width: 850px) {
+      .container {
         grid-template-columns: 1fr;
       }
     }
 
-    /* Left Settings Panel */
-    .panel {
-      background: #151d2f;
-      border: 1px solid #28354e;
+    .form-box {
+      background: #161b22;
+      border: 1px solid #30363d;
       border-radius: 8px;
       padding: 16px;
     }
 
-    .panel h2 {
+    .form-box h2 {
       font-size: 14px;
       font-weight: 700;
+      color: #58a6ff;
       margin-bottom: 12px;
-      color: #38bdf8;
     }
 
-    .field {
+    .field-group {
       margin-bottom: 8px;
     }
 
@@ -63,14 +61,14 @@
       display: block;
       font-size: 11px;
       font-weight: 600;
-      color: #94a3b8;
+      color: #8b949e;
       margin-bottom: 2px;
     }
 
     input {
       width: 100%;
-      background: #0b0f19;
-      border: 1px solid #28354e;
+      background: #0d1117;
+      border: 1px solid #30363d;
       color: #ffffff;
       padding: 6px 8px;
       border-radius: 4px;
@@ -79,10 +77,10 @@
     }
 
     input:focus {
-      border-color: #38bdf8;
+      border-color: #58a6ff;
     }
 
-    .btn-row {
+    .actions {
       display: flex;
       flex-direction: column;
       gap: 8px;
@@ -91,7 +89,7 @@
 
     button {
       width: 100%;
-      padding: 10px;
+      padding: 9px;
       border-radius: 4px;
       font-size: 12px;
       font-weight: 700;
@@ -110,77 +108,102 @@
     }
 
     .btn-prn {
-      background-color: #0284c7;
+      background-color: #1f6feb;
       color: #ffffff;
     }
 
     .btn-print {
-      background-color: #334155;
+      background-color: #30363d;
       color: #ffffff;
     }
 
-    /* Preview Canvas Area */
     .preview-stage {
-      background: #1e293b;
+      background: #21262d;
       padding: 24px;
       border-radius: 8px;
       display: flex;
       justify-content: center;
+      overflow-x: auto;
     }
 
-    /* EXACT PHYSICAL RATIO: 320px width × 460px height */
-    .label-canvas {
-      width: 320px;
-      height: 460px;
+    /* PHYSICAL PRINTER SIZE: 669px by 467px (Full Bleed Surface) */
+    .thermal-label {
+      width: 669px;
+      height: 467px;
+      min-width: 669px;
+      min-height: 467px;
       background: #ffffff;
       color: #000000;
       border-radius: 4px;
-      padding: 12px 14px 10px 14px;
+      padding: 16px 20px 14px 20px;
       position: relative;
       font-family: Arial, Helvetica, sans-serif;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
       user-select: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
 
-    /* Top Line */
+    /* Top Line across entire 669px */
     .top-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      height: 16px;
-      margin-bottom: 8px;
+      height: 22px;
+      border-bottom: 1.5px solid #000000;
+      padding-bottom: 2px;
     }
 
-    .brand-text {
-      font-size: 9px;
-      font-weight: 700;
-      letter-spacing: -0.1px;
+    .brand-title {
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: -0.2px;
     }
 
-    .status-tags {
+    .status-group {
       display: flex;
       align-items: center;
-      gap: 3px;
+      gap: 6px;
     }
 
     .status-prepaid {
-      font-size: 8.5px;
-      font-weight: 700;
+      font-size: 13px;
+      font-weight: 800;
     }
 
     .status-priority {
       background: #000000;
       color: #ffffff;
-      padding: 1.5px 3px;
+      padding: 2px 6px;
       font-weight: 900;
-      font-size: 8px;
+      font-size: 12px;
+      letter-spacing: 0.5px;
     }
 
-    /* Left Column Barcode + Rotated Texts */
-    .left-barcode-container {
+    /* Middle Layout */
+    .middle-layout {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: 20px;
+      height: 360px;
+      align-items: start;
+      margin-top: 8px;
+    }
+
+    /* Left Barcode & Batch */
+    .left-side {
+      position: relative;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .rotator-box {
       position: absolute;
-      top: 36px;
-      left: 10px;
+      top: 0;
+      left: 0;
       width: 50px;
       height: 270px;
     }
@@ -197,93 +220,90 @@
       width: 270px;
     }
 
-    .rot-labels-col {
+    .rot-text {
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       height: 270px;
-      padding-left: 4px;
+      padding-left: 6px;
       font-family: Arial, sans-serif;
-      font-weight: 700;
-      font-size: 8px;
-      line-height: 1;
+      font-weight: 800;
+      font-size: 11px;
       white-space: nowrap;
     }
 
-    /* Lower Left Batch & Mini Barcode */
-    .lower-left-section {
+    .bottom-batch {
       position: absolute;
-      top: 320px;
-      left: 14px;
-      width: 70px;
+      top: 290px;
+      left: 6px;
     }
 
-    .batch-1 {
-      font-size: 9.5px;
-      font-weight: 800;
+    .batch-code-1 {
+      font-size: 13px;
+      font-weight: 900;
       font-family: Arial, sans-serif;
-      line-height: 1.1;
     }
 
-    .batch-2 {
-      font-size: 6.5px;
+    .batch-code-2 {
+      font-size: 9.5px;
       font-weight: 700;
       font-family: Arial, sans-serif;
-      line-height: 1.1;
-      margin-top: 1px;
-      margin-bottom: 2px;
+      margin: 1px 0 2px 0;
     }
 
-    /* Right Section: Large QR Code + Address */
-    .right-section {
-      position: absolute;
-      top: 34px;
-      left: 78px;
-      width: 228px;
+    /* Right Section: Large QR Code + Address + Footer */
+    .right-side {
+      display: grid;
+      grid-template-columns: 210px 1fr;
+      gap: 20px;
+      height: 100%;
+      align-items: start;
     }
 
-    .qr-holder {
-      width: 172px;
-      height: 172px;
+    .qr-box {
+      width: 200px;
+      height: 200px;
     }
 
-    .qr-holder img {
+    .qr-box img {
       width: 100%;
       height: 100%;
       display: block;
     }
 
-    .address-holder {
-      margin-top: 6px;
-      font-size: 8px;
-      line-height: 1.25;
+    .address-info {
+      font-size: 12.5px;
+      line-height: 1.35;
       color: #000000;
     }
 
-    .addr-name {
-      font-size: 8.5px;
+    .cust-name {
+      font-size: 14px;
       font-weight: 800;
-      margin-bottom: 1px;
+      margin-bottom: 2px;
     }
 
-    /* Bottom Row: NPQ & Ordered Through Flipkart */
-    .bottom-row {
-      position: absolute;
-      top: 360px;
-      left: 78px;
-      width: 228px;
+    .pin-line {
+      font-weight: 800;
+      margin-top: 3px;
+    }
+
+    /* Bottom Info */
+    .bottom-info-bar {
+      grid-column: 1 / span 2;
       display: flex;
       justify-content: space-between;
-      align-items: flex-start;
+      align-items: flex-end;
+      margin-top: 18px;
     }
 
-    .vendor-npq {
-      font-size: 8.5px;
-      font-weight: 800;
-      margin-left: 24px;
+    .npq-badge {
+      font-size: 14px;
+      font-weight: 900;
+      margin-left: 10px;
     }
 
-    .flipkart-col {
+    .flipkart-block {
       display: flex;
       flex-direction: column;
       align-items: flex-end;
@@ -291,13 +311,14 @@
     }
 
     .fk-text {
-      font-size: 7.5px;
+      font-size: 11px;
       font-weight: 600;
+      color: #334155;
     }
 
     .fk-order {
-      font-size: 8.5px;
-      font-weight: 800;
+      font-size: 13px;
+      font-weight: 900;
       font-family: Arial, sans-serif;
     }
 
@@ -306,14 +327,14 @@
         background: transparent;
         padding: 0;
       }
-      .panel {
+      .form-box {
         display: none;
       }
       .preview-stage {
         background: transparent;
         padding: 0;
       }
-      .label-canvas {
+      .thermal-label {
         box-shadow: none;
         border-radius: 0;
         position: absolute;
@@ -321,7 +342,7 @@
         left: 0;
       }
       @page {
-        size: 55mm 80mm portrait;
+        size: 669px 467px;
         margin: 0;
       }
     }
@@ -329,122 +350,124 @@
 </head>
 <body>
 
-  <div class="app-container">
-    <!-- Config Panel -->
-    <div class="panel">
-      <h2>Ekart Priority PRN Generator</h2>
+  <div class="container">
+    <!-- Configuration Form -->
+    <div class="form-box">
+      <h2>Ekart Label Config</h2>
 
-      <div class="field">
+      <div class="field-group">
         <label>Tracking ID (TID) *</label>
         <input type="text" id="inTid" value="FMPP4251661422" oninput="render()" />
       </div>
 
-      <div class="field">
+      <div class="field-group">
         <label>Hub Code</label>
         <input type="text" id="inHub" value="CCJ/KOT" oninput="render()" />
       </div>
 
-      <div class="field">
+      <div class="field-group">
         <label>Order Reference ID</label>
         <input type="text" id="inOrder" value="S99090861540" oninput="render()" />
       </div>
 
-      <div class="field">
+      <div class="field-group">
         <label>Customer Name</label>
         <input type="text" id="inName" value="Nasrin K" oninput="render()" />
       </div>
 
-      <div class="field">
+      <div class="field-group">
         <label>Address Line 1</label>
         <input type="text" id="inAddr1" value="Kuruniyan saw mill Othukkungal" oninput="render()" />
       </div>
 
-      <div class="field">
+      <div class="field-group">
         <label>Landmark</label>
         <input type="text" id="inLandmark" value="after the transformer" oninput="render()" />
       </div>
 
-      <div class="field">
+      <div class="field-group">
         <label>Locality</label>
         <input type="text" id="inLocality" value="Nottanalakkal, Othukkungal, Near Jamia Ihyaussun" oninput="render()" />
       </div>
 
-      <div class="field">
+      <div class="field-group">
         <label>District & PIN</label>
         <input type="text" id="inPin" value="Malappuram - 676528" oninput="render()" />
       </div>
 
-      <div class="field">
+      <div class="field-group">
         <label>State</label>
         <input type="text" id="inState" value="Kerala" oninput="render()" />
       </div>
 
-      <div class="btn-row">
-        <!-- ZIP Download Button matching your exact repo naming -->
-        <button class="btn-zip" onclick="downloadZipArchive()">
+      <div class="actions">
+        <button class="btn-zip" onclick="downloadZip()">
           📦 Download shipments_[TID].zip
         </button>
-        <button class="btn-prn" onclick="downloadSinglePrn()">
+        <button class="btn-prn" onclick="downloadPrn()">
           📄 Download shipmentId_[TID].prn
         </button>
         <button class="btn-print" onclick="window.print()">
-          🖨️ Print Label
+          🖨️ Direct Print
         </button>
       </div>
     </div>
 
-    <!-- Live Preview Stage -->
+    <!-- Live Preview Stage (Exact 669x467 aspect ratio) -->
     <div class="preview-stage">
-      <div class="label-canvas">
-        <!-- Top Header -->
+      <div class="thermal-label">
+        <!-- Top Line Header -->
         <div class="top-header">
-          <span class="brand-text">NDD E-Kart Logistics</span>
-          <div class="status-tags">
+          <span class="brand-title">NDD E-Kart Logistics</span>
+          <div class="status-group">
             <span class="status-prepaid">PREPAID</span>
             <span class="status-priority">PRIORITY</span>
           </div>
         </div>
 
-        <!-- Left Vertical Code 128 Barcode -->
-        <div class="left-barcode-container">
-          <div class="rotator">
-            <svg id="svgMainBarcode"></svg>
-            <div class="rot-labels-col">
-              <span id="dispHub">CCJ/KOT</span>
-              <span id="dispTid">FMPP4251661422</span>
+        <!-- Middle Layout -->
+        <div class="middle-layout">
+          <!-- Left: Vertical Code 128 Barcode + Batch -->
+          <div class="left-side">
+            <div class="rotator-box">
+              <div class="rotator">
+                <svg id="svgMainBarcode"></svg>
+                <div class="rot-text">
+                  <span id="txtHub">CCJ/KOT</span>
+                  <span id="txtTid">FMPP4251661422</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="bottom-batch">
+              <div class="batch-code-1">13-09</div>
+              <div class="batch-code-2">LIAADSJ270015039</div>
+              <svg id="svgMiniBarcode"></svg>
             </div>
           </div>
-        </div>
 
-        <!-- Lower Left Batch & Mini Barcode -->
-        <div class="lower-left-section">
-          <div class="batch-1">13-09</div>
-          <div class="batch-2">LIAADSJ270015039</div>
-          <svg id="svgMiniBarcode"></svg>
-        </div>
+          <!-- Right: QR Code + Address + Bottom Section -->
+          <div class="right-side">
+            <div class="qr-box">
+              <img id="qrImg" src="" alt="QR" />
+            </div>
 
-        <!-- Right: Square QR + Customer Address -->
-        <div class="right-section">
-          <div class="qr-holder">
-            <img id="qrImg" src="" alt="QR" />
-          </div>
+            <div class="address-info">
+              <div class="cust-name" id="txtName">Nasrin 1 K</div>
+              <div id="txtAddr1">Kuruniyan saw mill Othukkungal</div>
+              <div id="txtLandmark" style="font-style: italic; color: #475569;">after the transformer</div>
+              <div id="txtLocality">Nottanalakkal, Othukkungal, Near Jamia Ihyaussun</div>
+              <div class="pin-line" id="txtPin">Malappuram - 676528</div>
+              <div id="txtState">Kerala</div>
+            </div>
 
-          <div class="address-holder">
-            <div class="addr-name" id="dispName">Nasrin K</div>
-            <div id="dispAddr1">Kuruniyan saw mill Othukkungal</div>
-            <div id="dispLandmark">after the transformer</div>
-            <div id="dispLocality">Nottanalakkal, Othukkungal, Near Jamia Ihyaussun</div>
-            <div id="dispPin">Malappuram - 676528</div>
-            <div id="dispState">Kerala</div>
-          </div>
-        </div>
-
-        <!-- Bottom Row: NPQ & Flipkart Order ID -->
-        <div class="bottom-row">
-          <span class="vendor-npq">NPQ</span>
-          <div class="flipkart-col">
-            <span class="fk-text">Ordered Through Flipkart</span>
-            <span class="fk-order" id="dispOrder">S99090861540</span>
+            <div class="bottom-info-bar">
+              <span class="npq-badge">NPQ</span>
+              <div class="flipkart-block">
+                <span class="fk-text">Ordered Through Flipkart</span>
+                <span class="fk-order" id="txtOrder">S99090861540</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -463,21 +486,21 @@
       const pin = document.getElementById('inPin').value;
       const state = document.getElementById('inState').value;
 
-      document.getElementById('dispHub').textContent = hub;
-      document.getElementById('dispTid').textContent = tid;
-      document.getElementById('dispName').textContent = name;
-      document.getElementById('dispAddr1').textContent = addr1;
-      document.getElementById('dispLandmark').textContent = landmark;
-      document.getElementById('dispLocality').textContent = locality;
-      document.getElementById('dispPin').textContent = pin;
-      document.getElementById('dispState').textContent = state;
-      document.getElementById('dispOrder').textContent = order;
+      document.getElementById('txtHub').textContent = hub;
+      document.getElementById('txtTid').textContent = tid;
+      document.getElementById('txtName').textContent = name;
+      document.getElementById('txtAddr1').textContent = addr1;
+      document.getElementById('txtLandmark').textContent = landmark;
+      document.getElementById('txtLocality').textContent = locality;
+      document.getElementById('txtPin').textContent = pin;
+      document.getElementById('txtState').textContent = state;
+      document.getElementById('txtOrder').textContent = order;
 
-      // Tall Left Barcode: 270px long in rotation
+      // Vertical Barcode
       try {
         JsBarcode("#svgMainBarcode", tid, {
           format: "CODE128",
-          width: 1.45,
+          width: 1.5,
           height: 38,
           displayValue: false,
           margin: 0,
@@ -486,12 +509,12 @@
         });
       } catch (e) {}
 
-      // Mini Route Barcode (Bottom-Left)
+      // Mini Route Barcode (Bottom Left)
       try {
         JsBarcode("#svgMiniBarcode", "1309", {
           format: "CODE128",
-          width: 0.95,
-          height: 22,
+          width: 1.1,
+          height: 24,
           displayValue: false,
           margin: 0,
           background: "transparent",
@@ -504,8 +527,8 @@
       document.getElementById('qrImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrData)}`;
     }
 
-    // Build ZPL PRN string matching the image layout
-    function buildZplContent() {
+    // Build ZPL scaled to fill the 669 x 467 thermal label area
+    function buildZpl() {
       const tid = document.getElementById('inTid').value.trim();
       const hub = document.getElementById('inHub').value.trim() || 'CCJ/KOT';
       const order = document.getElementById('inOrder').value.trim() || 'S99090861540';
@@ -518,44 +541,60 @@
 
       return `CT~~CD,~CC^~CT~
 ^XA
-~TA000~JSN^LT0^MNW^MTD^PON^PMN^LH0,0^JMA^PR5,5~SD30^JUS^LRN^CI27^PA0,1,1,0
+~TA000
+~JSN
+^LT0
+^MNW
+^MTD
+^PON
+^PMN
+^LH0,0
+^JMA
+^PR5,5
+~SD30
+^JUS
+^LRN
+^CI27
+^PA0,1,1,0
 ^XZ
 ^XA
-^PW440
-^LL640
-^PON
+^MMT
+^PW669
+^LL467
+^LS0
 
 ; --- TOP LINE ---
-^FO20,18^A0N,18,18^FDNDD E-Kart Logistics^FS
-^FO260,18^A0N,18,18^FDPREPAID^FS
-^FO340,14^GB75,22,22^FS
-^FO346,18^A0N,16,16^FR^FDPRIORITY^FS
+^FO25,20^A0N,22,22^FDNDD E-Kart Logistics^FS
+^FO430,20^A0N,22,22^FDPREPAID^FS
+^FO535,14^GB110,32,32^FS
+^FO545,20^A0N,20,20^FR^FDPRIORITY^FS
+^FO20,52^GB629,2,2^FS
 
 ; --- LEFT COLUMN: VERTICAL BARCODE & LABELS ---
-^FO20,48^BY2,2.5,42^BCR,42,N,N,N^FD${tid}^FS
-^FO70,52^A0R,16,16^FD${hub}^FS
-^FO70,225^A0R,16,16^FD${tid}^FS
+^FO25,65^BY2,2.5,58^BCR,58,N,N,N^FD${tid}^FS
+^FO95,70^A0R,20,20^FD${hub}^FS
+^FO95,190^A0R,20,20^FD${tid}^FS
 
 ; --- LOWER LEFT: BATCH & MINI BARCODE ---
-^FO20,430^A0N,18,18^FD13-09^FS
-^FO20,452^A0N,12,12^FDLIAADSJ270015039^FS
-^FO20,470^BY1,2,26^BCN,26,N,N,N^FD1309^FS
+^FO25,355^A0N,22,22^FD13-09^FS
+^FO25,380^A0N,15,15^FDLIAADSJ270015039^FS
+^FO25,402^BY1.2,2,30^BCN,30,N,N,N^FD1309^FS
 
-; --- RIGHT: SQUARE 2D QR CODE ---
-^FO115,48^BQN,2,5^FDMA,${tid};${order};${pin}^FS
+; --- RIGHT: 2D QR CODE (Upper Right) ---
+^FO170,65^BQN,2,6^FDMA,${tid};${order};${pin}^FS
 
 ; --- RIGHT: RECIPIENT ADDRESS ---
-^FO115,268^A0N,18,18^FD${name}^FS
-^FO115,292^A0N,14,14^FD${addr1}^FS
-^FO115,312^A0N,13,13^FD${landmark}^FS
-^FO115,332^A0N,13,13^FD${locality}^FS
-^FO115,352^A0N,15,15^FD${pin}^FS
-^FO115,372^A0N,14,14^FD${state}^FS
+^FO360,65^A0N,22,22^FD${name}^FS
+^FO360,95^A0N,17,17^FD${addr1}^FS
+^FO360,120^A0N,16,16^FD${landmark}^FS
+^FO360,145^A0N,16,16^FD${locality}^FS
+^FO360,175^A0N,19,19^FD${pin}^FS
+^FO360,200^A0N,17,17^FD${state}^FS
 
-; --- BOTTOM ROW: NPQ & FLIPKART ORDER ID ---
-^FO155,420^A0N,16,16^FDNPQ^FS
-^FO240,412^A0N,13,13^FDOrdered Through Flipkart^FS
-^FO295,430^A0N,16,16^FD${order}^FS
+; --- BOTTOM RIGHT: SELLER & FLIPKART ORDER ID ---
+^FO200,400^A0N,20,20^FDNPQ^FS
+^FO440,390^A0N,16,16^FDOrdered Through Flipkart^FS
+^FO495,414^A0N,20,20^FD${order}^FS
 
 ^PQ1,0,1,Y
 ^XZ
@@ -563,46 +602,41 @@
     }
 
     // 1. Download shipments_[TID].zip containing shipmentId_[TID].prn
-    async function downloadZipArchive() {
+    async function downloadZip() {
       const tid = document.getElementById('inTid').value.trim();
       if (!tid) {
-        alert("Please enter a Tracking ID.");
+        alert("Enter Tracking ID");
         return;
       }
 
       try {
         const zip = new JSZip();
-        const prnData = buildZplContent();
+        const prnData = buildZpl();
+        zip.file(`shipmentId_${tid}.prn`, prnData);
 
-        // Exact internal file name format from your repo: shipmentId_[TID].prn
-        const fileName = `shipmentId_${tid}.prn`;
-        zip.file(fileName, prnData);
-
-        // Generate zip file
         const blob = await zip.generateAsync({ type: 'blob' });
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        // Exact outer archive name format from your repo: shipments_[TID].zip
         link.download = `shipments_${tid}.zip`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
-      } catch (err) {
-        alert("Failed to generate ZIP archive: " + err.message);
+      } catch (e) {
+        alert("ZIP generation failed: " + e.message);
       }
     }
 
-    // 2. Download standalone shipmentId_[TID].prn file
-    function downloadSinglePrn() {
+    // 2. Download standalone shipmentId_[TID].prn
+    function downloadPrn() {
       const tid = document.getElementById('inTid').value.trim();
       if (!tid) {
-        alert("Please enter a Tracking ID.");
+        alert("Enter Tracking ID");
         return;
       }
 
-      const prnData = buildZplContent();
+      const prnData = buildZpl();
       const blob = new Blob([prnData], { type: 'text/plain' });
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
@@ -614,7 +648,6 @@
       URL.revokeObjectURL(url);
     }
 
-    // Initialize on load
     render();
   </script>
 </body>
