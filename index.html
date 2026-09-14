@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ekart NDD Priority (Exact Thermal Alignment)</title>
+  <title>Ekart NDD Priority (Correct Vertical Print)</title>
   <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <style>
@@ -16,7 +16,7 @@
     body {
       background-color: #0b0f19;
       color: #f1f5f9;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      font-family: Arial, Helvetica, sans-serif;
       min-height: 100vh;
       display: flex;
       justify-content: center;
@@ -24,17 +24,17 @@
       padding: 24px 16px;
     }
 
-    .wrapper {
+    .container {
       display: grid;
       grid-template-columns: 320px auto;
-      gap: 28px;
+      gap: 30px;
       align-items: start;
-      max-width: 1050px;
+      max-width: 860px;
       width: 100%;
     }
 
-    @media (max-width: 800px) {
-      .wrapper {
+    @media (max-width: 768px) {
+      .container {
         grid-template-columns: 1fr;
       }
     }
@@ -53,7 +53,7 @@
       margin-bottom: 12px;
     }
 
-    .input-field {
+    .field {
       margin-bottom: 8px;
     }
 
@@ -112,166 +112,171 @@
       color: #ffffff;
     }
 
-    .preview-box {
+    /* PREVIEW CONTAINER */
+    .preview-stage {
       background: #1e293b;
       padding: 24px;
       border-radius: 8px;
       display: flex;
       justify-content: center;
-      overflow-x: auto;
     }
 
-    /* MATCHES EXACT STICKER ASPECT RATIO IN YOUR PHOTO */
-    .sticker {
-      width: 600px;
-      height: 380px;
-      min-width: 600px;
-      min-height: 380px;
+    /* 1:1 PROPORTION OF THE ORIGINAL VERTICAL STICKER */
+    .label-canvas {
+      width: 320px;
+      height: 460px;
       background: #ffffff;
       color: #000000;
-      border-radius: 8px;
-      padding: 16px 20px 14px 20px;
+      border-radius: 4px;
+      padding: 12px 14px 10px 14px;
       position: relative;
       font-family: Arial, Helvetica, sans-serif;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
       user-select: none;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
     }
 
     /* Top Line Header */
-    .header-bar {
+    .top-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 13px;
-      font-weight: 800;
-      letter-spacing: -0.2px;
-      border-bottom: 2px solid #000;
-      padding-bottom: 4px;
+      height: 16px;
+      margin-bottom: 8px;
     }
 
-    .status-area {
+    .brand-text {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: -0.1px;
+    }
+
+    .status-tags {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 3px;
     }
 
-    .priority-badge {
+    .status-prepaid {
+      font-size: 8.5px;
+      font-weight: 700;
+    }
+
+    .status-priority {
       background: #000000;
       color: #ffffff;
-      padding: 2px 5px;
+      padding: 1.5px 3px;
       font-weight: 900;
-      font-size: 11px;
+      font-size: 8px;
     }
 
-    /* Main Grid: Left Column Barcode | Right Side QR & Details */
-    .body-grid {
-      display: grid;
-      grid-template-columns: 80px 180px 1fr;
-      gap: 16px;
-      align-items: start;
-      margin-top: 8px;
-      flex: 1;
+    /* Left Column Barcode + Rotated Texts */
+    .left-barcode-container {
+      position: absolute;
+      top: 36px;
+      left: 10px;
+      width: 50px;
+      height: 270px;
     }
 
-    /* Vertical Barcode Column */
-    .barcode-col {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      height: 280px;
-      position: relative;
-    }
-
-    .rotated-barcode {
+    .rotator {
       position: absolute;
       top: 0;
       left: 0;
-      transform: rotate(-90deg) translate(-210px, 0);
+      transform: rotate(-90deg) translate(-270px, 0);
       transform-origin: top left;
       display: flex;
       align-items: center;
-      gap: 4px;
-      white-space: nowrap;
-      width: 210px;
+      height: 50px;
+      width: 270px;
     }
 
-    .rotated-text {
-      display: flex;
-      flex-direction: column;
-      font-size: 9px;
-      font-weight: 800;
-      line-height: 1.1;
-      font-family: Arial, sans-serif;
-    }
-
-    .bottom-batch-box {
-      position: absolute;
-      bottom: 0;
-      left: 2px;
-    }
-
-    .batch-t1 {
-      font-size: 11px;
-      font-weight: 900;
-    }
-
-    .batch-t2 {
-      font-size: 8px;
-      font-weight: 700;
-      color: #334155;
-      margin: 1px 0 2px 0;
-    }
-
-    /* Center QR Column */
-    .qr-col {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 10px;
-    }
-
-    .qr-col img {
-      width: 170px;
-      height: 170px;
-      display: block;
-    }
-
-    .vendor-tag {
-      font-size: 13px;
-      font-weight: 900;
-      margin-left: 20px;
-    }
-
-    /* Right Address & Flipkart Column */
-    .address-col {
+    .rot-labels-col {
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      height: 280px;
-      padding-left: 10px;
+      height: 270px;
+      padding-left: 4px;
+      font-family: Arial, sans-serif;
+      font-weight: 700;
+      font-size: 8px;
+      line-height: 1;
+      white-space: nowrap;
     }
 
-    .address-box {
-      font-size: 12px;
-      line-height: 1.35;
-      color: #000;
+    /* Lower Left Batch & Mini Barcode */
+    .lower-left-section {
+      position: absolute;
+      top: 320px;
+      left: 14px;
+      width: 70px;
     }
 
-    .customer-title {
-      font-size: 14px;
-      font-weight: 900;
+    .batch-1 {
+      font-size: 9.5px;
+      font-weight: 800;
+      font-family: Arial, sans-serif;
+      line-height: 1.1;
+    }
+
+    .batch-2 {
+      font-size: 6.5px;
+      font-weight: 700;
+      font-family: Arial, sans-serif;
+      line-height: 1.1;
+      margin-top: 1px;
       margin-bottom: 2px;
     }
 
-    .pin-title {
-      font-weight: 800;
-      margin-top: 2px;
+    /* Right Section: Large QR Code + Address */
+    .right-section {
+      position: absolute;
+      top: 34px;
+      left: 78px;
+      width: 228px;
     }
 
-    .fk-footer {
+    .qr-holder {
+      width: 172px;
+      height: 172px;
+    }
+
+    .qr-holder img {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .address-holder {
+      margin-top: 6px;
+      font-size: 8px;
+      line-height: 1.25;
+      color: #000000;
+    }
+
+    .addr-name {
+      font-size: 8.5px;
+      font-weight: 800;
+      margin-bottom: 1px;
+    }
+
+    /* Bottom Row: NPQ & Ordered Through Flipkart */
+    .bottom-row {
+      position: absolute;
+      top: 360px;
+      left: 78px;
+      width: 228px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .vendor-npq {
+      font-size: 8.5px;
+      font-weight: 800;
+      margin-left: 24px;
+    }
+
+    .flipkart-col {
       display: flex;
       flex-direction: column;
       align-items: flex-end;
@@ -279,132 +284,125 @@
     }
 
     .fk-text {
-      font-size: 11px;
+      font-size: 7.5px;
       font-weight: 600;
-      color: #334155;
     }
 
     .fk-order {
-      font-size: 13px;
-      font-weight: 900;
+      font-size: 8.5px;
+      font-weight: 800;
       font-family: Arial, sans-serif;
     }
   </style>
 </head>
 <body>
 
-  <div class="wrapper">
-    <!-- Form Inputs -->
+  <div class="container">
     <div class="form-panel">
-      <h2>Ekart Label Configuration</h2>
+      <h2>Ekart Label Config</h2>
 
-      <div class="input-field">
+      <div class="field">
         <label>Tracking ID (TID) *</label>
         <input type="text" id="inTid" value="FMPP4251661422" oninput="render()" />
       </div>
 
-      <div class="input-field">
+      <div class="field">
         <label>Hub Code</label>
         <input type="text" id="inHub" value="CCJ/KOT" oninput="render()" />
       </div>
 
-      <div class="input-field">
-        <label>Flipkart Order ID</label>
+      <div class="field">
+        <label>Order Reference ID</label>
         <input type="text" id="inOrder" value="S99090861540" oninput="render()" />
       </div>
 
-      <div class="input-field">
+      <div class="field">
         <label>Customer Name</label>
         <input type="text" id="inName" value="Nasrin K" oninput="render()" />
       </div>
 
-      <div class="input-field">
+      <div class="field">
         <label>Address Line 1</label>
         <input type="text" id="inAddr1" value="Kuruniyan saw mill Othukkungal" oninput="render()" />
       </div>
 
-      <div class="input-field">
+      <div class="field">
         <label>Landmark</label>
         <input type="text" id="inLandmark" value="after the transformer" oninput="render()" />
       </div>
 
-      <div class="input-field">
-        <label>Area / Locality</label>
+      <div class="field">
+        <label>Locality</label>
         <input type="text" id="inLocality" value="Nottanalakkal, Othukkungal, Near Jamia Ihyaussun" oninput="render()" />
       </div>
 
-      <div class="input-field">
+      <div class="field">
         <label>District & PIN</label>
         <input type="text" id="inPin" value="Malappuram - 676528" oninput="render()" />
       </div>
 
-      <div class="input-field">
+      <div class="field">
         <label>State</label>
         <input type="text" id="inState" value="Kerala" oninput="render()" />
       </div>
 
       <div class="btn-group">
-        <button class="btn-zip" onclick="downloadZip()">
+        <button class="btn-zip" onclick="downloadZipArchive()">
           📦 Download shipments_[TID].zip
         </button>
-        <button class="btn-prn" onclick="downloadPrn()">
+        <button class="btn-prn" onclick="downloadSinglePrn()">
           📄 Download shipmentId_[TID].prn
         </button>
       </div>
     </div>
 
-    <!-- Live Preview Canvas -->
-    <div class="preview-box">
-      <div class="sticker">
-        <!-- Top Header -->
-        <div class="header-bar">
-          <span>NDD E-Kart Logistics</span>
-          <div class="status-area">
-            <span>PREPAID</span>
-            <span class="priority-badge">PRIORITY</span>
+    <!-- Live Preview Stage -->
+    <div class="preview-stage">
+      <div class="label-canvas">
+        <div class="top-header">
+          <span class="brand-text">NDD E-Kart Logistics</span>
+          <div class="status-tags">
+            <span class="status-prepaid">PREPAID</span>
+            <span class="status-priority">PRIORITY</span>
           </div>
         </div>
 
-        <!-- Body Grid -->
-        <div class="body-grid">
-          <!-- Left: Rotated Barcode & Mini Barcode -->
-          <div class="barcode-col">
-            <div class="rotated-barcode">
-              <svg id="svgMainBarcode"></svg>
-              <div class="rotated-text">
-                <span id="dispHub">CCJ/KOT</span>
-                <span id="dispTid">FMPP4251661422</span>
-              </div>
-            </div>
-
-            <div class="bottom-batch-box">
-              <div class="batch-t1">13-09</div>
-              <div class="batch-t2">LIAADSJ270015039</div>
-              <svg id="svgMiniBarcode"></svg>
+        <div class="left-barcode-container">
+          <div class="rotator">
+            <svg id="svgMainBarcode"></svg>
+            <div class="rot-labels-col">
+              <span id="dispHub">CCJ/KOT</span>
+              <span id="dispTid">FMPP4251661422</span>
             </div>
           </div>
+        </div>
 
-          <!-- Middle: QR Code + NPQ -->
-          <div class="qr-col">
+        <div class="lower-left-section">
+          <div class="batch-1">13-09</div>
+          <div class="batch-2">LIAADSJ270015039</div>
+          <svg id="svgMiniBarcode"></svg>
+        </div>
+
+        <div class="right-section">
+          <div class="qr-holder">
             <img id="qrImg" src="" alt="QR" />
-            <span class="vendor-tag">NPQ</span>
           </div>
 
-          <!-- Right: Customer Address + Order ID -->
-          <div class="address-col">
-            <div class="address-box">
-              <div class="customer-title" id="dispName">Nasrin K</div>
-              <div id="dispAddr1">Kuruniyan saw mill Othukkungal</div>
-              <div id="dispLandmark" style="font-style: italic; color: #475569;">after the transformer</div>
-              <div id="dispLocality">Nottanalakkal, Othukkungal, Near Jamia Ihyaussun</div>
-              <div class="pin-title" id="dispPin">Malappuram - 676528</div>
-              <div id="dispState">Kerala</div>
-            </div>
+          <div class="address-holder">
+            <div class="addr-name" id="dispName">Nasrin K</div>
+            <div id="dispAddr1">Kuruniyan saw mill Othukkungal</div>
+            <div id="dispLandmark">after the transformer</div>
+            <div id="dispLocality">Nottanalakkal, Othukkungal, Near Jamia Ihyaussun</div>
+            <div id="dispPin">Malappuram - 676528</div>
+            <div id="dispState">Kerala</div>
+          </div>
+        </div>
 
-            <div class="fk-footer">
-              <span class="fk-text">Ordered Through Flipkart</span>
-              <span class="fk-order" id="dispOrder">S99090861540</span>
-            </div>
+        <div class="bottom-row">
+          <span class="vendor-npq">NPQ</span>
+          <div class="flipkart-col">
+            <span class="fk-text">Ordered Through Flipkart</span>
+            <span class="fk-order" id="dispOrder">S99090861540</span>
           </div>
         </div>
       </div>
@@ -433,11 +431,10 @@
       document.getElementById('dispState').textContent = state;
       document.getElementById('dispOrder').textContent = order;
 
-      // Barcodes
       try {
         JsBarcode("#svgMainBarcode", tid, {
           format: "CODE128",
-          width: 1.3,
+          width: 1.45,
           height: 38,
           displayValue: false,
           margin: 0,
@@ -449,8 +446,8 @@
       try {
         JsBarcode("#svgMiniBarcode", "1309", {
           format: "CODE128",
-          width: 0.9,
-          height: 20,
+          width: 0.95,
+          height: 22,
           displayValue: false,
           margin: 0,
           background: "transparent",
@@ -458,13 +455,12 @@
         });
       } catch (e) {}
 
-      // QR
       const qrData = `${tid};${order};${pin}`;
-      document.getElementById('qrImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=170x170&data=${encodeURIComponent(qrData)}`;
+      document.getElementById('qrImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrData)}`;
     }
 
-    // Exact ZPL generator matching the printer feed direction
-    function buildZpl() {
+    // Exact ZPL Rotation across the 669x467 print head so the physical sticker comes out pure portrait
+    function buildZplContent() {
       const tid = document.getElementById('inTid').value.trim();
       const hub = document.getElementById('inHub').value.trim() || 'CCJ/KOT';
       const order = document.getElementById('inOrder').value.trim() || 'S99090861540';
@@ -485,54 +481,54 @@
 ^LL467
 ^LS0
 
-; --- TOP LINE ACROSS HEADER ---
-^FO25,18^A0N,20,20^FDNDD E-Kart Logistics^FS
-^FO430,18^A0N,20,20^FDPREPAID^FS
-^FO530,12^GB100,28,28^FS
-^FO538,18^A0N,18,18^FR^FDPRIORITY^FS
-^FO20,44^GB625,2,2^FS
+; --- TOP LINE ---
+^FT440,16^A0R,20,20^FDNDD E-Kart Logistics^FS
+^FT440,260^A0R,18,18^FDPREPAID^FS
+^FO420,335^GB26,80,26^FS
+^FT440,342^A0R,17,17^FR^FDPRIORITY^FS
 
-; --- LEFT COLUMN: VERTICAL BARCODE & ROTATED STRIP ---
-^FO25,58^BY2,2.5,42^BCR,42,N,N,N^FD${tid}^FS
-^FO75,62^A0R,16,16^FD${hub}^FS
-^FO75,200^A0R,16,16^FD${tid}^FS
+; --- LONG VERTICAL BARCODE DOWN THE LEFT SIDE ---
+^FO380,20^BY2,2.5,45^BCR,45,N,N,N^FD${tid}^FS
+^FT370,25^A0R,16,16^FD${hub}^FS
+^FT370,150^A0R,16,16^FD${tid}^FS
 
-; --- LOWER LEFT: BATCH NUMBERS & MINI BARCODE ---
-^FO25,325^A0N,18,18^FD13-09^FS
-^FO25,348^A0N,13,13^FDLIAADSJ270015039^FS
-^FO25,368^BY1.2,2,24^BCN,24,N,N,N^FD1309^FS
+; --- LOWER LEFT BATCH & MINI BARCODE ---
+^FT370,330^A0R,18,18^FD13-09^FS
+^FT350,330^A0R,13,13^FDLIAADSJ270015039^FS
+^FO295,330^BY1.2,2,30^BCR,30,N,N,N^FD1309^FS
 
-; --- CENTER: 2D QR CODE MATRIX ---
-^FO130,58^BQN,2,6^FDMA,${tid};${order};${pin}^FS
-^FO170,325^A0N,20,20^FDNPQ^FS
+; --- 2D QR CODE (Top-Right of the label) ---
+^FO240,20^BQR,2,5^FDMA,${tid};${order};${pin}^FS
 
-; --- RIGHT: RECIPIENT ADDRESS & FLIPKART DETAILS ---
-^FO320,58^A0N,20,20^FD${name}^FS
-^FO320,86^A0N,16,16^FD${addr1}^FS
-^FO320,110^A0N,15,15^FD${landmark}^FS
-^FO320,134^A0N,15,15^FD${locality}^FS
-^FO320,162^A0N,18,18^FD${pin}^FS
-^FO320,188^A0N,16,16^FD${state}^FS
+; --- RECIPIENT DETAILS (Directly below QR) ---
+^FT220,210^A0R,18,18^FD${name}^FS
+^FT195,210^A0R,14,14^FD${addr1}^FS
+^FT175,210^A0R,13,13^FD${landmark}^FS
+^FT155,210^A0R,13,13^FD${locality}^FS
+^FT135,210^A0R,15,15^FD${pin}^FS
+^FT115,210^A0R,14,14^FD${state}^FS
 
-; --- BOTTOM RIGHT FOOTER ---
-^FO420,340^A0N,15,15^FDOrdered Through Flipkart^FS
-^FO480,365^A0N,18,18^FD${order}^FS
+; --- BOTTOM: NPQ & FLIPKART ORDER ID ---
+^FT160,20^A0R,18,18^FDNPQ^FS
+^FT80,240^A0R,14,14^FDOrdered Through Flipkart^FS
+^FT55,290^A0R,16,16^FD${order}^FS
 
 ^PQ1,0,1,Y
 ^XZ
 `;
     }
 
-    async function downloadZip() {
+    async function downloadZipArchive() {
       const tid = document.getElementById('inTid').value.trim();
       if (!tid) {
-        alert("Enter Tracking ID");
+        alert("Please enter a Tracking ID.");
         return;
       }
 
       try {
         const zip = new JSZip();
-        zip.file(`shipmentId_${tid}.prn`, buildZpl());
+        const prnData = buildZplContent();
+        zip.file(`shipmentId_${tid}.prn`, prnData);
 
         const blob = await zip.generateAsync({ type: 'blob' });
         const url = URL.createObjectURL(blob);
@@ -543,19 +539,20 @@
         link.click();
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
-      } catch (e) {
-        alert("Error generating ZIP: " + e.message);
+      } catch (err) {
+        alert("Failed to generate ZIP: " + err.message);
       }
     }
 
-    function downloadPrn() {
+    function downloadSinglePrn() {
       const tid = document.getElementById('inTid').value.trim();
       if (!tid) {
-        alert("Enter Tracking ID");
+        alert("Please enter a Tracking ID.");
         return;
       }
 
-      const blob = new Blob([buildZpl()], { type: 'text/plain' });
+      const prnData = buildZplContent();
+      const blob = new Blob([prnData], { type: 'text/plain' });
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
@@ -563,7 +560,7 @@
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      URL.revokeObjectURL(url);
+      URL.revokeObjectURL(link.href);
     }
 
     render();
