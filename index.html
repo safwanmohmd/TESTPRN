@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ekart NDD Priority (Correct Vertical Print)</title>
+  <title>Ekart PRN & ZIP Generator</title>
   <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <style>
@@ -14,8 +14,8 @@
     }
 
     body {
-      background-color: #0b0f19;
-      color: #f1f5f9;
+      background-color: #0d1117;
+      color: #f0f6fc;
       font-family: Arial, Helvetica, sans-serif;
       min-height: 100vh;
       display: flex;
@@ -27,7 +27,7 @@
     .container {
       display: grid;
       grid-template-columns: 320px auto;
-      gap: 30px;
+      gap: 28px;
       align-items: start;
       max-width: 860px;
       width: 100%;
@@ -40,8 +40,8 @@
     }
 
     .form-panel {
-      background: #151d2f;
-      border: 1px solid #28354e;
+      background: #161b22;
+      border: 1px solid #30363d;
       border-radius: 8px;
       padding: 16px;
     }
@@ -49,7 +49,7 @@
     .form-panel h2 {
       font-size: 14px;
       font-weight: 700;
-      color: #38bdf8;
+      color: #58a6ff;
       margin-bottom: 12px;
     }
 
@@ -61,14 +61,14 @@
       display: block;
       font-size: 11px;
       font-weight: 600;
-      color: #94a3b8;
+      color: #8b949e;
       margin-bottom: 2px;
     }
 
     input {
       width: 100%;
-      background: #0b0f19;
-      border: 1px solid #28354e;
+      background: #0d1117;
+      border: 1px solid #30363d;
       color: #ffffff;
       padding: 6px 8px;
       border-radius: 4px;
@@ -77,7 +77,7 @@
     }
 
     input:focus {
-      border-color: #38bdf8;
+      border-color: #58a6ff;
     }
 
     .btn-group {
@@ -108,22 +108,20 @@
     }
 
     .btn-prn {
-      background-color: #0284c7;
+      background-color: #1f6feb;
       color: #ffffff;
     }
 
-    /* PREVIEW CONTAINER */
     .preview-stage {
-      background: #1e293b;
+      background: #21262d;
       padding: 24px;
       border-radius: 8px;
       display: flex;
       justify-content: center;
     }
 
-    /* 1:1 PROPORTION OF THE ORIGINAL VERTICAL STICKER */
     .label-canvas {
-      width: 320px;
+      width: 310px;
       height: 460px;
       background: #ffffff;
       color: #000000;
@@ -135,7 +133,6 @@
       user-select: none;
     }
 
-    /* Top Line Header */
     .top-header {
       display: flex;
       justify-content: space-between;
@@ -169,10 +166,9 @@
       font-size: 8px;
     }
 
-    /* Left Column Barcode + Rotated Texts */
     .left-barcode-container {
       position: absolute;
-      top: 36px;
+      top: 34px;
       left: 10px;
       width: 50px;
       height: 270px;
@@ -195,7 +191,7 @@
       flex-direction: column;
       justify-content: space-between;
       height: 270px;
-      padding-left: 4px;
+      padding-left: 6px;
       font-family: Arial, sans-serif;
       font-weight: 700;
       font-size: 8px;
@@ -203,16 +199,15 @@
       white-space: nowrap;
     }
 
-    /* Lower Left Batch & Mini Barcode */
     .lower-left-section {
       position: absolute;
-      top: 320px;
-      left: 14px;
+      top: 315px;
+      left: 10px;
       width: 70px;
     }
 
     .batch-1 {
-      font-size: 9.5px;
+      font-size: 10px;
       font-weight: 800;
       font-family: Arial, sans-serif;
       line-height: 1.1;
@@ -224,20 +219,19 @@
       font-family: Arial, sans-serif;
       line-height: 1.1;
       margin-top: 1px;
-      margin-bottom: 2px;
+      margin-bottom: 3px;
     }
 
-    /* Right Section: Large QR Code + Address */
     .right-section {
       position: absolute;
       top: 34px;
       left: 78px;
-      width: 228px;
+      width: 220px;
     }
 
     .qr-holder {
-      width: 172px;
-      height: 172px;
+      width: 195px;
+      height: 195px;
     }
 
     .qr-holder img {
@@ -247,33 +241,32 @@
     }
 
     .address-holder {
-      margin-top: 6px;
-      font-size: 8px;
+      margin-top: 8px;
+      font-size: 8.5px;
       line-height: 1.25;
       color: #000000;
     }
 
     .addr-name {
-      font-size: 8.5px;
+      font-size: 9px;
       font-weight: 800;
       margin-bottom: 1px;
     }
 
-    /* Bottom Row: NPQ & Ordered Through Flipkart */
     .bottom-row {
       position: absolute;
-      top: 360px;
+      top: 375px;
       left: 78px;
-      width: 228px;
+      width: 220px;
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
     }
 
     .vendor-npq {
-      font-size: 8.5px;
+      font-size: 9px;
       font-weight: 800;
-      margin-left: 24px;
+      margin-left: 20px;
     }
 
     .flipkart-col {
@@ -434,8 +427,8 @@
       try {
         JsBarcode("#svgMainBarcode", tid, {
           format: "CODE128",
-          width: 1.45,
-          height: 38,
+          width: 1.5,
+          height: 44,
           displayValue: false,
           margin: 0,
           background: "transparent",
@@ -455,12 +448,12 @@
         });
       } catch (e) {}
 
-      const qrData = `${tid};${order};${pin}`;
-      document.getElementById('qrImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrData)}`;
+      const pinOnly = (pin.match(/\d{6}/) || [pin])[0];
+      const qrData = `${tid};${order};${pinOnly}`;
+      document.getElementById('qrImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(qrData)}`;
     }
 
-    // Exact ZPL Rotation across the 669x467 print head so the physical sticker comes out pure portrait
-    function buildZplContent() {
+    function buildRotatedZpl() {
       const tid = document.getElementById('inTid').value.trim();
       const hub = document.getElementById('inHub').value.trim() || 'CCJ/KOT';
       const order = document.getElementById('inOrder').value.trim() || 'S99090861540';
@@ -470,50 +463,52 @@
       const locality = document.getElementById('inLocality').value;
       const pin = document.getElementById('inPin').value;
       const state = document.getElementById('inState').value;
+      const pinOnly = (pin.match(/\d{6}/) || [pin])[0];
 
-      return `CT~~CD,~CC^~CT~
-^XA
-~TA000~JSN^LT0^MNW^MTD^PON^PMN^LH0,0^JMA^PR5,5~SD30^JUS^LRN^CI27^PA0,1,1,0
+      return `^XA
+~TA000
+~JSN
+^LT0
+^MNW
+^MTD
+^PON
+^PMN
+^LH0,0
+^JMA
+^PR5,5
+~SD30
+^JUS
+^LRN
+^CI27
+^PA0,1,1,0
 ^XZ
 ^XA
 ^MMT
-^PW669
-^LL467
+^PW672
+^LL468
 ^LS0
 
-; --- TOP LINE ---
-^FT440,16^A0R,20,20^FDNDD E-Kart Logistics^FS
-^FT440,260^A0R,18,18^FDPREPAID^FS
-^FO420,335^GB26,80,26^FS
-^FT440,342^A0R,17,17^FR^FDPRIORITY^FS
-
-; --- LONG VERTICAL BARCODE DOWN THE LEFT SIDE ---
-^FO380,20^BY2,2.5,45^BCR,45,N,N,N^FD${tid}^FS
-^FT370,25^A0R,16,16^FD${hub}^FS
-^FT370,150^A0R,16,16^FD${tid}^FS
-
-; --- LOWER LEFT BATCH & MINI BARCODE ---
-^FT370,330^A0R,18,18^FD13-09^FS
-^FT350,330^A0R,13,13^FDLIAADSJ270015039^FS
-^FO295,330^BY1.2,2,30^BCR,30,N,N,N^FD1309^FS
-
-; --- 2D QR CODE (Top-Right of the label) ---
-^FO240,20^BQR,2,5^FDMA,${tid};${order};${pin}^FS
-
-; --- RECIPIENT DETAILS (Directly below QR) ---
-^FT220,210^A0R,18,18^FD${name}^FS
-^FT195,210^A0R,14,14^FD${addr1}^FS
-^FT175,210^A0R,13,13^FD${landmark}^FS
-^FT155,210^A0R,13,13^FD${locality}^FS
-^FT135,210^A0R,15,15^FD${pin}^FS
-^FT115,210^A0R,14,14^FD${state}^FS
-
-; --- BOTTOM: NPQ & FLIPKART ORDER ID ---
-^FT160,20^A0R,18,18^FDNPQ^FS
-^FT80,240^A0R,14,14^FDOrdered Through Flipkart^FS
-^FT55,290^A0R,16,16^FD${order}^FS
-
-^PQ1,0,1,Y
+^FX TOP HEADER ^FS
+^FO641,16^A0R,20,20^FDNDD E-Kart Logistics^FS
+^FO640,250^A0R,18,18^FDPREPAID^FS
+^FO635,340^GB26,90,26^FS
+^FO640,348^FR^A0R,17,17^FDPRIORITY^FS
+^FO223,17^BY2,2,76.2188940092166^BCN,76.2188940092166,N,N,N^FD${tid}^FS
+^FO571,130^A0I,14,17^FD${hub}^FS
+^FO358,131^A0I,17,17^FD${tid}^FS
+^FO129,11^A0R,20,20^FD13-09^FS
+^FO107,11^A0R,12,12^FDLIAADSJ270015039^FS
+^FO54,9^BY1,2,33.47926267281106^BCR,33.47926267281106,N,N,N^FD1309^FS
+^FO348,175^BQN,2,9^FDLA,${tid};${order};${pinOnly}^FS
+^FO325,170^A0R,19,19^FD${name}^FS
+^FO294,169^A0R,14,14^FD${addr1}^FS
+^FO274,169^A0R,13,13^FD${landmark}^FS
+^FO254,169^A0R,13,13^FD${locality}^FS
+^FO231,169^A0R,16,16^FD${pin}^FS
+^FO205,168^A0R,17,14^FD${state}^FS
+^FO34,227^A0R,20,20^FDNPQ^FS
+^FO93,323^A0R,14,14^FDOrdered Through Flipkart^FS
+^FO65,343^A0R,18,18^FD${order}^FS
 ^XZ
 `;
     }
@@ -527,7 +522,7 @@
 
       try {
         const zip = new JSZip();
-        const prnData = buildZplContent();
+        const prnData = buildRotatedZpl();
         zip.file(`shipmentId_${tid}.prn`, prnData);
 
         const blob = await zip.generateAsync({ type: 'blob' });
@@ -551,7 +546,7 @@
         return;
       }
 
-      const prnData = buildZplContent();
+      const prnData = buildRotatedZpl();
       const blob = new Blob([prnData], { type: 'text/plain' });
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
@@ -560,7 +555,7 @@
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      URL.revokeObjectURL(link.href);
+      URL.revokeObjectURL(url);
     }
 
     render();
