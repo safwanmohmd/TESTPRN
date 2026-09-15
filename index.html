@@ -121,7 +121,6 @@
       justify-content: center;
     }
 
-    /* 1:1 VISUAL REPRODUCTION MATCHING PHYSICAL STICKER */
     .label-canvas {
       width: 310px;
       height: 460px;
@@ -170,30 +169,30 @@
 
     .left-barcode-container {
       position: absolute;
-      top: 34px;
+      top: 32px;
       left: 10px;
-      width: 50px;
-      height: 270px;
+      width: 52px;
+      height: 275px;
     }
 
     .rotator {
       position: absolute;
       top: 0;
       left: 0;
-      transform: rotate(-90deg) translate(-270px, 0);
+      transform: rotate(-90deg) translate(-275px, 0);
       transform-origin: top left;
       display: flex;
       align-items: center;
-      height: 50px;
-      width: 270px;
+      height: 52px;
+      width: 275px;
     }
 
     .rot-labels-col {
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      height: 270px;
-      padding-left: 6px;
+      height: 275px;
+      padding-left: 4px;
       font-family: Arial, sans-serif;
       font-weight: 600;
       font-size: 8px;
@@ -226,25 +225,24 @@
 
     .right-section {
       position: absolute;
-      top: 32px;
-      left: 80px;
-      width: 215px;
+      top: 30px;
+      left: 78px;
+      width: 218px;
     }
 
     .dm-holder {
-      width: 175px;
-      height: 175px;
+      width: 195px;
+      height: 195px;
     }
 
     #dmCanvas {
-      width: 175px;
-      height: 175px;
+      width: 195px;
+      height: 195px;
       image-rendering: pixelated;
     }
 
-    /* Crisp, clean, readable address typography */
     .address-holder {
-      margin-top: 8px;
+      margin-top: 10px;
       font-size: 8.5px;
       line-height: 1.3;
       color: #111827;
@@ -267,9 +265,9 @@
 
     .bottom-row {
       position: absolute;
-      top: 380px;
-      left: 80px;
-      width: 215px;
+      top: 382px;
+      left: 78px;
+      width: 218px;
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
@@ -441,7 +439,7 @@
         JsBarcode("#svgMainBarcode", tid, {
           format: "CODE128",
           width: 1.5,
-          height: 44,
+          height: 48,
           displayValue: false,
           margin: 0,
           background: "transparent",
@@ -467,7 +465,7 @@
         bwipjs.toCanvas('dmCanvas', {
           bcid: 'datamatrix',
           text: dmText,
-          scale: 4,
+          scale: 4.5,
           includetext: false
         });
       } catch (e) {}
@@ -514,29 +512,29 @@
 ^FO635,340^GB26,90,26^FS
 ^FO640,348^FR^A0R,17,17^FDPRIORITY^FS
 
-^FX --- LEFT VERTICAL CODE 128 BARCODE (SCANNER OPTIMIZED) --- ^FS
-^FO220,24^BY2,3,76^BCN,76,N,N,N,A^FD${tid}^FS
-^FO571,130^A0I,16,14^FD${hub}^FS
-^FO358,131^A0I,16,14^FD${tid}^FS
+^FX --- LEFT VERTICAL CODE 128 BARCODE & ALIGNED TEXT --- ^FS
+^FO170,22^BY2,3,80^BCN,80,N,N,N,A^FD${tid}^FS
+^FO571,110^A0I,16,14^FD${hub}^FS
+^FO366,110^A0I,16,14^FD${tid}^FS
 
 ^FX --- LOWER LEFT BATCH & MINI BARCODE --- ^FS
 ^FO129,16^A0R,20,20^FD13-09^FS
 ^FO107,16^A0R,12,12^FDLIAADSJ270015039^FS
 ^FO50,16^BY1,2,32^BCR,32,N,N,N^FD1309^FS
 
-^FX --- EXACT EKART 2D DATA MATRIX (NO QR SQUARE EYES) --- ^FS
-^FO355,175^BXN,9,200^FD${tid};${order};${pinOnly}^FS
+^FX --- LARGER 2D DATA MATRIX CODE --- ^FS
+^FO370,165^BXN,10,200^FD${tid};${order};${pinOnly}^FS
 
-^FX --- RECIPIENT ADDRESS (CRISP & LEGIBLE, NO HEAVY BOLD) --- ^FS
-^FO330,170^A0R,20,18^FD${name}^FS
-^FO302,170^A0R,17,14^FD${addr1}^FS
-^FO280,170^A0R,16,13^FD${landmark}^FS
-^FO258,170^A0R,16,13^FD${locality}^FS
-^FO232,170^A0R,18,15^FD${pin}^FS
-^FO206,170^A0R,17,14^FD${state}^FS
+^FX --- RECIPIENT ADDRESS --- ^FS
+^FO305,165^A0R,20,18^FD${name}^FS
+^FO280,165^A0R,17,14^FD${addr1}^FS
+^FO260,165^A0R,16,13^FDafter the transformer^FS
+^FO240,165^A0R,16,13^FD${locality}^FS
+^FO216,165^A0R,18,15^FD${pin}^FS
+^FO192,165^A0R,17,14^FD${state}^FS
 
 ^FX --- BOTTOM FOOTER --- ^FS
-^FO34,227^A0R,20,20^FDNPQ^FS
+^FO40,227^A0R,20,20^FDNPQ^FS
 ^FO93,310^A0R,15,13^FDOrdered Through Flipkart^FS
 ^FO65,335^A0R,18,17^FD${order}^FS
 ^XZ
