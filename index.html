@@ -169,7 +169,7 @@
 
     .left-barcode-container {
       position: absolute;
-      top: 32px;
+      top: 24px;
       left: 10px;
       width: 52px;
       height: 275px;
@@ -225,24 +225,24 @@
 
     .right-section {
       position: absolute;
-      top: 30px;
+      top: 26px;
       left: 78px;
       width: 218px;
     }
 
     .dm-holder {
-      width: 195px;
-      height: 195px;
+      width: 205px;
+      height: 205px;
     }
 
     #dmCanvas {
-      width: 195px;
-      height: 195px;
+      width: 205px;
+      height: 205px;
       image-rendering: pixelated;
     }
 
     .address-holder {
-      margin-top: 10px;
+      margin-top: 12px;
       font-size: 8.5px;
       line-height: 1.3;
       color: #111827;
@@ -465,7 +465,7 @@
         bwipjs.toCanvas('dmCanvas', {
           bcid: 'datamatrix',
           text: dmText,
-          scale: 4.5,
+          scale: 4.8,
           includetext: false
         });
       } catch (e) {}
@@ -512,29 +512,29 @@
 ^FO635,340^GB26,90,26^FS
 ^FO640,348^FR^A0R,17,17^FDPRIORITY^FS
 
-^FX --- LEFT VERTICAL CODE 128 BARCODE & ALIGNED TEXT --- ^FS
-^FO170,22^BY2,3,80^BCN,80,N,N,N,A^FD${tid}^FS
-^FO571,110^A0I,16,14^FD${hub}^FS
-^FO366,110^A0I,16,14^FD${tid}^FS
+^FX --- LEFT VERTICAL CODE 128 BARCODE (SHIFTED CLOSER TO TOP) --- ^FS
+^FO255,24^BY2,3,76^BCN,76,N,N,N,A^FD${tid}^FS
+^FO571,130^A0I,16,14^FD${hub}^FS
+^FO393,131^A0I,16,14^FD${tid}^FS
 
 ^FX --- LOWER LEFT BATCH & MINI BARCODE --- ^FS
 ^FO129,16^A0R,20,20^FD13-09^FS
 ^FO107,16^A0R,12,12^FDLIAADSJ270015039^FS
 ^FO50,16^BY1,2,32^BCR,32,N,N,N^FD1309^FS
 
-^FX --- LARGER 2D DATA MATRIX CODE --- ^FS
-^FO370,165^BXN,10,200^FD${tid};${order};${pinOnly}^FS
+^FX --- ENLARGED 2D DATA MATRIX (INCREASED TO MODULE 11) --- ^FS
+^FO360,165^BXN,11,200^FD${tid};${order};${pinOnly}^FS
 
-^FX --- RECIPIENT ADDRESS --- ^FS
-^FO305,165^A0R,20,18^FD${name}^FS
-^FO280,165^A0R,17,14^FD${addr1}^FS
-^FO260,165^A0R,16,13^FDafter the transformer^FS
-^FO240,165^A0R,16,13^FD${locality}^FS
-^FO216,165^A0R,18,15^FD${pin}^FS
-^FO192,165^A0R,17,14^FD${state}^FS
+^FX --- RECIPIENT ADDRESS (SHIFTED DOWN TO CLEAR LARGER 2D CODE) --- ^FS
+^FO295,165^A0R,20,18^FD${name}^FS
+^FO270,165^A0R,17,14^FD${addr1}^FS
+^FO250,165^A0R,16,13^FD${landmark}^FS
+^FO230,165^A0R,16,13^FD${locality}^FS
+^FO206,165^A0R,18,15^FD${pin}^FS
+^FO182,165^A0R,17,14^FD${state}^FS
 
 ^FX --- BOTTOM FOOTER --- ^FS
-^FO40,227^A0R,20,20^FDNPQ^FS
+^FO34,227^A0R,20,20^FDNPQ^FS
 ^FO93,310^A0R,15,13^FDOrdered Through Flipkart^FS
 ^FO65,335^A0R,18,17^FD${order}^FS
 ^XZ
