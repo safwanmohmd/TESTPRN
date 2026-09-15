@@ -169,7 +169,7 @@
 
     .left-barcode-container {
       position: absolute;
-      top: 24px;
+      top: 32px;
       left: 10px;
       width: 52px;
       height: 275px;
@@ -231,18 +231,18 @@
     }
 
     .dm-holder {
-      width: 205px;
-      height: 205px;
+      width: 210px;
+      height: 210px;
     }
 
     #dmCanvas {
-      width: 205px;
-      height: 205px;
+      width: 210px;
+      height: 210px;
       image-rendering: pixelated;
     }
 
     .address-holder {
-      margin-top: 12px;
+      margin-top: 10px;
       font-size: 8.5px;
       line-height: 1.3;
       color: #111827;
@@ -308,6 +308,11 @@
       <div class="field">
         <label>Tracking ID (TID) *</label>
         <input type="text" id="inTid" value="FMPP4251661422" oninput="render()" />
+      </div>
+
+      <div class="field">
+        <label>Date / Batch (DD-MM) *</label>
+        <input type="text" id="inDate" value="13-09" oninput="render()" />
       </div>
 
       <div class="field">
@@ -382,7 +387,7 @@
         </div>
 
         <div class="lower-left-section">
-          <div class="batch-1">13-09</div>
+          <div class="batch-1" id="dispBatchDate">13-09</div>
           <div class="batch-2">LIAADSJ270015039</div>
           <svg id="svgMiniBarcode"></svg>
         </div>
@@ -416,6 +421,7 @@
   <script>
     function render() {
       const tid = document.getElementById('inTid').value.trim() || 'FMPP4251661422';
+      const dateVal = document.getElementById('inDate').value.trim() || '13-09';
       const hub = document.getElementById('inHub').value.trim() || 'CCJ/KOT';
       const order = document.getElementById('inOrder').value.trim() || 'S99090861540';
       const name = document.getElementById('inName').value;
@@ -427,6 +433,7 @@
 
       document.getElementById('dispHub').textContent = hub;
       document.getElementById('dispTid').textContent = tid;
+      document.getElementById('dispBatchDate').textContent = dateVal;
       document.getElementById('dispName').textContent = name;
       document.getElementById('dispAddr1').textContent = addr1;
       document.getElementById('dispLandmark').textContent = landmark;
@@ -447,8 +454,9 @@
         });
       } catch (e) {}
 
+      const miniCodeData = dateVal.replace(/[^0-9]/g, '') || '1309';
       try {
-        JsBarcode("#svgMiniBarcode", "1309", {
+        JsBarcode("#svgMiniBarcode", miniCodeData, {
           format: "CODE128",
           width: 0.95,
           height: 22,
@@ -465,14 +473,16 @@
         bwipjs.toCanvas('dmCanvas', {
           bcid: 'datamatrix',
           text: dmText,
-          scale: 4.8,
+          scale: 5,
           includetext: false
         });
       } catch (e) {}
     }
 
     function buildRotatedZpl() {
-      const tid = document.getElementById('inTid').value.trim();
+      const tid = document.getElementById('inTid').value.trim() || 'FMPP4251661422';
+      const dateVal = document.getElementById('inDate').value.trim() || '13-09';
+      const miniCodeData = dateVal.replace(/[^0-9]/g, '') || '1309';
       const hub = document.getElementById('inHub').value.trim() || 'CCJ/KOT';
       const order = document.getElementById('inOrder').value.trim() || 'S99090861540';
       const name = document.getElementById('inName').value;
@@ -514,16 +524,16 @@
 
 ^FX --- LEFT VERTICAL CODE 128 BARCODE (SHIFTED CLOSER TO TOP) --- ^FS
 ^FO255,24^BY2,3,76^BCN,76,N,N,N,A^FD${tid}^FS
-^FO571,130^A0I,16,14^FD${hub}^FS
-^FO393,131^A0I,16,14^FD${tid}^FS
+^FO571,100^A0I,16,14^FD${hub}^FS
+^FO258,100^A0I,16,14^FD${tid}^FS
 
 ^FX --- LOWER LEFT BATCH & MINI BARCODE --- ^FS
-^FO129,16^A0R,20,20^FD13-09^FS
+^FO129,16^A0R,20,20^FD${dateVal}^FS
 ^FO107,16^A0R,12,12^FDLIAADSJ270015039^FS
-^FO50,16^BY1,2,32^BCR,32,N,N,N^FD1309^FS
+^FO50,16^BY1,2,32^BCR,32,N,N,N^FD${miniCodeData}^FS
 
-^FX --- ENLARGED 2D DATA MATRIX (INCREASED TO MODULE 11) --- ^FS
-^FO360,165^BXN,11,200^FD${tid};${order};${pinOnly}^FS
+^FX --- ENLARGED 2D DATA MATRIX (ROTATED: SOLID L-CORNER AT BOTTOM-LEFT) --- ^FS
+^FO363,167^BXR,12,200^FD${tid};${order};${pinOnly}^FS
 
 ^FX --- RECIPIENT ADDRESS (SHIFTED DOWN TO CLEAR LARGER 2D CODE) --- ^FS
 ^FO295,165^A0R,20,18^FD${name}^FS
