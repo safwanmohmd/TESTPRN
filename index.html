@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ekart PRN & ZIP Generator</title>
+  <title>Exact Ekart NDD Priority PRN Generator</title>
   <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bwip-js@3.0.4/dist/bwip-js-min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <style>
     * {
@@ -16,7 +17,7 @@
     body {
       background-color: #0d1117;
       color: #f0f6fc;
-      font-family: Arial, Helvetica, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
       min-height: 100vh;
       display: flex;
       justify-content: center;
@@ -29,7 +30,7 @@
       grid-template-columns: 320px auto;
       gap: 28px;
       align-items: start;
-      max-width: 860px;
+      max-width: 880px;
       width: 100%;
     }
 
@@ -120,6 +121,7 @@
       justify-content: center;
     }
 
+    /* 1:1 VISUAL REPRODUCTION MATCHING PHYSICAL STICKER */
     .label-canvas {
       width: 310px;
       height: 460px;
@@ -193,7 +195,7 @@
       height: 270px;
       padding-left: 6px;
       font-family: Arial, sans-serif;
-      font-weight: 700;
+      font-weight: 600;
       font-size: 8px;
       line-height: 1;
       white-space: nowrap;
@@ -224,47 +226,57 @@
 
     .right-section {
       position: absolute;
-      top: 34px;
-      left: 78px;
-      width: 220px;
+      top: 32px;
+      left: 80px;
+      width: 215px;
     }
 
-    .qr-holder {
-      width: 195px;
-      height: 195px;
+    .dm-holder {
+      width: 175px;
+      height: 175px;
     }
 
-    .qr-holder img {
-      width: 100%;
-      height: 100%;
-      display: block;
+    #dmCanvas {
+      width: 175px;
+      height: 175px;
+      image-rendering: pixelated;
     }
 
+    /* Crisp, clean, readable address typography */
     .address-holder {
       margin-top: 8px;
       font-size: 8.5px;
-      line-height: 1.25;
-      color: #000000;
+      line-height: 1.3;
+      color: #111827;
     }
 
     .addr-name {
-      font-size: 9px;
+      font-size: 9.5px;
       font-weight: 800;
-      margin-bottom: 1px;
+      margin-bottom: 2px;
+    }
+
+    .addr-line {
+      font-weight: 500;
+      color: #1f2937;
+    }
+
+    .addr-pin {
+      font-weight: 700;
     }
 
     .bottom-row {
       position: absolute;
-      top: 375px;
-      left: 78px;
-      width: 220px;
+      top: 380px;
+      left: 80px;
+      width: 215px;
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
     }
 
     .vendor-npq {
-      font-size: 9px;
+      font-size: 9.5px;
       font-weight: 800;
       margin-left: 20px;
     }
@@ -279,10 +291,11 @@
     .fk-text {
       font-size: 7.5px;
       font-weight: 600;
+      color: #374151;
     }
 
     .fk-order {
-      font-size: 8.5px;
+      font-size: 9px;
       font-weight: 800;
       font-family: Arial, sans-serif;
     }
@@ -292,7 +305,7 @@
 
   <div class="container">
     <div class="form-panel">
-      <h2>Ekart Label Config</h2>
+      <h2>Ekart Label Generator</h2>
 
       <div class="field">
         <label>Tracking ID (TID) *</label>
@@ -377,17 +390,17 @@
         </div>
 
         <div class="right-section">
-          <div class="qr-holder">
-            <img id="qrImg" src="" alt="QR" />
+          <div class="dm-holder">
+            <canvas id="dmCanvas"></canvas>
           </div>
 
           <div class="address-holder">
             <div class="addr-name" id="dispName">Nasrin K</div>
-            <div id="dispAddr1">Kuruniyan saw mill Othukkungal</div>
-            <div id="dispLandmark">after the transformer</div>
-            <div id="dispLocality">Nottanalakkal, Othukkungal, Near Jamia Ihyaussun</div>
-            <div id="dispPin">Malappuram - 676528</div>
-            <div id="dispState">Kerala</div>
+            <div class="addr-line" id="dispAddr1">Kuruniyan saw mill Othukkungal</div>
+            <div class="addr-line" id="dispLandmark">after the transformer</div>
+            <div class="addr-line" id="dispLocality">Nottanalakkal, Othukkungal, Near Jamia Ihyaussun</div>
+            <div class="addr-pin" id="dispPin">Malappuram - 676528</div>
+            <div class="addr-line" id="dispState">Kerala</div>
           </div>
         </div>
 
@@ -449,8 +462,15 @@
       } catch (e) {}
 
       const pinOnly = (pin.match(/\d{6}/) || [pin])[0];
-      const qrData = `${tid};${order};${pinOnly}`;
-      document.getElementById('qrImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(qrData)}`;
+      const dmText = `${tid};${order};${pinOnly}`;
+      try {
+        bwipjs.toCanvas('dmCanvas', {
+          bcid: 'datamatrix',
+          text: dmText,
+          scale: 4,
+          includetext: false
+        });
+      } catch (e) {}
     }
 
     function buildRotatedZpl() {
@@ -475,8 +495,8 @@
 ^PMN
 ^LH0,0
 ^JMA
-^PR5,5
-~SD30
+^PR4,4
+~SD22
 ^JUS
 ^LRN
 ^CI27
@@ -488,27 +508,37 @@
 ^LL468
 ^LS0
 
-^FX TOP HEADER ^FS
+^FX --- TOP HEADER --- ^FS
 ^FO641,16^A0R,20,20^FDNDD E-Kart Logistics^FS
 ^FO640,250^A0R,18,18^FDPREPAID^FS
 ^FO635,340^GB26,90,26^FS
 ^FO640,348^FR^A0R,17,17^FDPRIORITY^FS
-^FO223,17^BY2,2,76.2188940092166^BCN,76.2188940092166,N,N,N^FD${tid}^FS
-^FO571,130^A0I,14,17^FD${hub}^FS
-^FO358,131^A0I,17,17^FD${tid}^FS
-^FO129,11^A0R,20,20^FD13-09^FS
-^FO107,11^A0R,12,12^FDLIAADSJ270015039^FS
-^FO54,9^BY1,2,33.47926267281106^BCR,33.47926267281106,N,N,N^FD1309^FS
-^FO348,175^BQN,2,9^FDLA,${tid};${order};${pinOnly}^FS
-^FO325,170^A0R,19,19^FD${name}^FS
-^FO294,169^A0R,14,14^FD${addr1}^FS
-^FO274,169^A0R,13,13^FD${landmark}^FS
-^FO254,169^A0R,13,13^FD${locality}^FS
-^FO231,169^A0R,16,16^FD${pin}^FS
-^FO205,168^A0R,17,14^FD${state}^FS
+
+^FX --- LEFT VERTICAL CODE 128 BARCODE (SCANNER OPTIMIZED) --- ^FS
+^FO220,24^BY2,3,76^BCN,76,N,N,N,A^FD${tid}^FS
+^FO571,130^A0I,16,14^FD${hub}^FS
+^FO358,131^A0I,16,14^FD${tid}^FS
+
+^FX --- LOWER LEFT BATCH & MINI BARCODE --- ^FS
+^FO129,16^A0R,20,20^FD13-09^FS
+^FO107,16^A0R,12,12^FDLIAADSJ270015039^FS
+^FO50,16^BY1,2,32^BCR,32,N,N,N^FD1309^FS
+
+^FX --- EXACT EKART 2D DATA MATRIX (NO QR SQUARE EYES) --- ^FS
+^FO355,175^BXN,9,200^FD${tid};${order};${pinOnly}^FS
+
+^FX --- RECIPIENT ADDRESS (CRISP & LEGIBLE, NO HEAVY BOLD) --- ^FS
+^FO330,170^A0R,20,18^FD${name}^FS
+^FO302,170^A0R,17,14^FD${addr1}^FS
+^FO280,170^A0R,16,13^FD${landmark}^FS
+^FO258,170^A0R,16,13^FD${locality}^FS
+^FO232,170^A0R,18,15^FD${pin}^FS
+^FO206,170^A0R,17,14^FD${state}^FS
+
+^FX --- BOTTOM FOOTER --- ^FS
 ^FO34,227^A0R,20,20^FDNPQ^FS
-^FO93,323^A0R,14,14^FDOrdered Through Flipkart^FS
-^FO65,343^A0R,18,18^FD${order}^FS
+^FO93,310^A0R,15,13^FDOrdered Through Flipkart^FS
+^FO65,335^A0R,18,17^FD${order}^FS
 ^XZ
 `;
     }
@@ -555,10 +585,12 @@
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      URL.revokeObjectURL(url);
+      URL.revokeObjectURL(link.href);
     }
 
-    render();
+    window.onload = function() {
+      render();
+    };
   </script>
 </body>
 </html>
